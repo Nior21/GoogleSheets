@@ -52,6 +52,54 @@ function NewData() {
   // Начало функции NewData()
   Logger.log("START NewData()")
   
+  // Вкладка 'Основная'
+  var Main = SpreadsheetApp.getActive().getSheetByName('Основная')
+  Logger.log("Main=" + Main)
+  
+  // Вкладка 'Цены'
+  var Prices = SpreadsheetApp.getActive().getSheetByName('Цены')
+  Logger.log("Prices=" + Prices)
+
+  // Расчет номера последней строки в справочнике
+  var NewRowInPrices = Prices.getLastRow() + 1
+  Logger.log("Prices.getLastRow()=" + Prices.getLastRow() + '; NewRowInPrices=' + NewRowInPrices)
+  
+  // Текущая ячейка (ссылка)
+  var Cell = SpreadsheetApp.getActive().getCurrentCell()
+  // Logger.log("Cell=" + Cell)
+  
+  // Столбец в котором происходит событие редактирования (число)
+  var Column = Cell.getColumn()
+  // Logger.log("Column=" + Column)
+  
+  // Строка в которой происходит событие редактирования (число)
+  var Row = Cell.getRow()
+  // Logger.log("Row=" + Row)
+  
+  // Сводная информация по выделенной ячейке
+  Logger.log("Cell (" + Cell + " : Row=" + Row + ", Column=" + Column + ") = " + Cell.getValue())
+  
+  // Ячейка (расположение) в которой находится 'Наименование' ингредиента
+  var Name = Main.getRange(Row, 1)
+  Logger.log("Name=" + Name)
+  
+  // Копирую 'Наименование' нового ингредиента в справочник в новую строку
+  Name.copyTo(Prices.getRange(NewRowInPrices, 1), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  Logger.log("Data (Name=" + Name.getValue() + ") copy in a new cell (" + Prices.getRange(NewRowInPrices, 1) + ")")
+  
+  // Копирую значение активной ячейки в соответствующую ячейку справочника
+  Cell.copyTo(Prices.getRange(NewRowInPrices, Column), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false)
+  Logger.log("Data (Cell=" + Cell.getValue() + ") copy in a new cell {(NewRowInPrices, Column)=(" + NewRowInPrices + "," + Column + ")}")
+  
+  // Увеличиваем именнованные диапазоны
+  SpreadsheetApp.getActive().setNamedRange('Цены', Prices.getRange('A2:C' + NewRowInPrices))
+  SpreadsheetApp.getActive().setNamedRange('Ингредиенты', Prices.getRange('A2:A' + NewRowInPrices))
+  Logger.log('В именованные диапазоны добавлены новые строки (NamedRange=' + NewRowInPrices + ')')
+  
+  // Восстанавливаем исходную формулу в ячейке
+  Cell.setFormula('=IF(ISERROR(VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE))')
+  Logger.log('Формула в ячейке (' + Row + ',' + Column + ') восстановлена: ' + '=IF(ISERROR(VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE))')
+  
   // Конец функции NewData()
   Logger.log("END NewData()")
 }
