@@ -7,34 +7,37 @@ function onEdit(event) {
   
   // Имя листа на котором происходит событие (для фильтра)
   var Sheet = event.source.getActiveSheet().getSheetName()
-  Logger.log("Sheet=" + Sheet)
+  // Logger.log("Sheet=" + Sheet)
   
   // Текущая ячейка (ссылка)
   var Cell = SpreadsheetApp.getActive().getCurrentCell()
-  Logger.log("Cell=" + Cell)
+  // Logger.log("Cell=" + Cell)
   
   // Строка в которой происходит событие редактирования (число)
   var Row = Cell.getRow()
-  Logger.log("Row=" + Row)
+  // Logger.log("Row=" + Row)
   
   // Столбец в котором происходит событие редактирования (число)
   var Column = Cell.getColumn()
-  Logger.log("Column=" + Column)
+  // Logger.log("Column=" + Column)
+  
+  Logger.log("Cell (" + Cell + " : Row=" + Row + ", Column=" + Column + ") = " + Cell.getValue())
   
   // Номер столбца содержащего индекс поиска значений в справочнике
   var Col_RowInLib = 9 // TODO: Заменить на функцию поиска номера колонки по названию
-  Logger.log("Col_RowInLib=" + Col_RowInLib)
+  // Logger.log("Col_RowInLib=" + Col_RowInLib)
   
   // Индекс поиска значений в справочнике (значение ячейки)
   var RowInLib = SpreadsheetApp.getActive().getActiveSheet().getRange(Row, Col_RowInLib).getValue()
-  Logger.log("RowInLib (" + Row + "," + Col_RowInLib + ")=" + RowInLib)
+  Logger.log("RowInLib (" + Row + "," + "Col_RowInLib=" + Col_RowInLib + ") = " + RowInLib)
   
   if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib == -1) {
-    Logger.log("If (Sheet=='Основная'&&Row>1&&Column>=5&&Column<=6&&RowInLib==-1)=True, NewData")
-    ChangeData() // TODO: Создать новую функцию
+    Logger.log("If for NewData() = True")
+    ChangeData() // TODO: Для этой задачи создать новую функцию
   }
+  // ChangeData
   else if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib > 0) {
-    Logger.log("If (Sheet=='Основная'&&Row>1&&Column>=5&&Column<=6&&RowInLib>0)=True, ChangeData")
+    Logger.log("If for ChangeData() = True")
     ChangeData()
   }
   
