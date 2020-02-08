@@ -33,8 +33,9 @@ function onEdit(event) {
   
   if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib == -1) {
     Logger.log("If for NewData() = True")
-    ChangeData() // TODO: Для этой задачи создать новую функцию
+    NewData()
   }
+  
   // ChangeData
   else if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib > 0) {
     Logger.log("If for ChangeData() = True")
@@ -45,14 +46,14 @@ function onEdit(event) {
   Logger.log("END onEdit()")
 }
 
-function NewRowInMain(event) {
-// Функция реагирует на события добавления новых строк на вкладке 'Основная'
+function NewData() {
+// Функция реагирует на события указания новых значений на вкладке 'Основная' для отсутствующих в справочнике ингридентов
   
-  // Начало функции NewRowInMain()
-  Logger.log("START NewRowInMain()")
+  // Начало функции NewData()
+  Logger.log("START NewData()")
   
-  // Конец функции NewRowInMain()
-  Logger.log("END NewRowInMain()")
+  // Конец функции NewData()
+  Logger.log("END NewData()")
 }
 
 function ChangeData(event) {
@@ -96,4 +97,14 @@ function ChangeData(event) {
   
   // Конец функции ChangeData()
   Logger.log("END ChangeData()")
+}
+
+function NewRowInMain(event) {
+// Функция реагирует на события добавления новых строк на вкладке 'Основная'
+  
+  // Начало функции NewRowInMain()
+  Logger.log("START NewRowInMain()")
+  
+  // Конец функции NewRowInMain()
+  Logger.log("END NewRowInMain()")
 }
