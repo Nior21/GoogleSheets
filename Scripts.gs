@@ -31,15 +31,21 @@ function onEdit(event) {
   var RowInLib = SpreadsheetApp.getActive().getActiveSheet().getRange(Row, Col_RowInLib).getValue()
   Logger.log("RowInLib (" + Row + "," + "Col_RowInLib=" + Col_RowInLib + ") = " + RowInLib)
   
+  // NewData()
   if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib == -1) {
     Logger.log("If for NewData() = True")
     NewData()
   }
   
-  // ChangeData
+  // ChangeData()
   else if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib > 0) {
     Logger.log("If for ChangeData() = True")
     ChangeData()
+  }
+  // NewRowInMain()
+  else if (Sheet == 'Основная' && Row > 1 && Column == 1) {
+    Logger.log("If for NewRowInMain() = True")
+    NewRowInMain()
   }
   
   // Конец функции onEdit()
@@ -152,6 +158,8 @@ function NewRowInMain(event) {
   
   // Начало функции NewRowInMain()
   Logger.log("START NewRowInMain()")
+  
+  
   
   // Конец функции NewRowInMain()
   Logger.log("END NewRowInMain()")
