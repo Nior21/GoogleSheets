@@ -63,8 +63,6 @@ function onEdit(event) {
     ChangeData()
   }
   // NewRowInMain()
-  // Нужна переменная считающая кол-во строк в таблице до изменения (добавления значения в новую строку)
-  // Или нужно сравнивать номер новой строки с уже имеющимся именнованным диапазоном
   else if (Sheet == 'Основная' && Row > 1 && Column == 1 && LastRowInMain > LastRowInNamedMain) {
     Logger.log("If for NewRowInMain() = True")
     NewRowInMain()
@@ -195,7 +193,36 @@ function NewRowInMain(event) {
   // Начало функции NewRowInMain()
   Logger.log("START NewRowInMain()")
   
+  // Вкладка 'Основная'
+  var Main = SpreadsheetApp.getActive().getSheetByName('Основная')
+  Logger.log("Main=" + Main)
   
+  // Расчет номера последней строки на вкладке 'Основная'
+  var indexLastRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getLastRow()
+  Logger.log('indexLastRowInMain=' + indexLastRowInMain)
+  
+  // Увеличиваем именнованные диапазоны таблица 'Основная'
+  SpreadsheetApp.getActive().setNamedRange('ОсновнаяТаблица', Main.getRange('A2:E' + indexLastRowInMain))
+  SpreadsheetApp.getActive().setNamedRange('RowInLib', Main.getRange('I2:I' + indexLastRowInMain))
+  Logger.log('В именованные диапазоны добавлены новые строки (NamedRange=' + indexLastRowInMain + ')')
+  
+  // Копируем диапазон последней строки на вкладке 'Основная'
+  var LastRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 2, 1, 9)
+  Logger.log('LastRowInMain=' + LastRowInMain)
+  
+  // Копируем формулы из старой строки
+  var formulaLastRowInMain = LastRowInMain.getFormulas()
+  Logger.log('formulaLastRowInMain=' + formulaLastRowInMain)
+  
+  // Копируем диапазон новой строки на вкладке 'Основная'
+  var NewRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain, 2, 1, 9)
+  Logger.log('NewRowInMain=' + NewRowInMain)
+  
+  // Вставляем значение формул из старой в новую строку
+  NewRowInMain.setFormulas(formulaLastRowInMain)
+  
+  //Cell.setFormula('=IF(ISERROR(VLOOKUP($A' + LastRowInMain + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + LastRowInMain + ';Цены;' + Column + ';FALSE))')
+  //Logger.log('Формула в ячейке (' + LastRowInMain + ',' + Column + ') восстановлена: ' + '=IF(ISERROR(VLOOKUP($A' + LastRowInMain + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE))')
   
   // Конец функции NewRowInMain()
   Logger.log("END NewRowInMain()")
