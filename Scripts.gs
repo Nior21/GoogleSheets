@@ -5,9 +5,17 @@ function onEdit(event) {
   // Начало функции onEdit()
   Logger.log("START onEdit()")
   
+  /*
+  ОПРЕДЕЛЕНИЕ ПЕРЕМЕННЫХ
+  */
+  
   // Имя листа на котором происходит событие (для фильтра)
   var Sheet = event.source.getActiveSheet().getSheetName()
   // Logger.log("Sheet=" + Sheet)
+  
+  // Вкладка 'Основная'
+  var Main = SpreadsheetApp.getActive().getSheetByName('Основная')
+  Logger.log("Main=" + Main)
   
   // Текущая ячейка (ссылка)
   var Cell = SpreadsheetApp.getActive().getCurrentCell()
@@ -29,7 +37,19 @@ function onEdit(event) {
   
   // Индекс поиска значений в справочнике (значение ячейки)
   var RowInLib = SpreadsheetApp.getActive().getActiveSheet().getRange(Row, Col_RowInLib).getValue()
-  Logger.log("RowInLib (" + Row + "," + "Col_RowInLib=" + Col_RowInLib + ") = " + RowInLib)
+  Logger.log("RowInLib (" + Row + "," + "Col_RowInLib=" + Col_RowInLib + ") = " + RowInLib) 
+  
+  // Расчет номера последней строки на вкладке 'Основная'
+  var LastRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getLastRow()
+  Logger.log('LastRowInMain=' + LastRowInMain)
+  
+  // Расчет номера последней строки в именованном диапазоне 'ОсновнаяТаблица'
+  var LastRowInNamedMain = SpreadsheetApp.getActiveSpreadsheet().getRange('ОсновнаяТаблица').getLastRow()
+  Logger.log('LastRowInNamedMain=' + LastRowInNamedMain)
+  
+  /*
+  ЗАПУСК ФУНКЦИЙ (ПРОВЕРКА УСЛОВИЙ)
+  */
   
   // NewData()
   if (Sheet == 'Основная' && Row > 1 && Column >= 2 && Column <= 3 && RowInLib == -1) {
@@ -43,14 +63,24 @@ function onEdit(event) {
     ChangeData()
   }
   // NewRowInMain()
-  else if (Sheet == 'Основная' && Row > 1 && Column == 1) {
+  // Нужна переменная считающая кол-во строк в таблице до изменения (добавления значения в новую строку)
+  // Или нужно сравнивать номер новой строки с уже имеющимся именнованным диапазоном
+  else if (Sheet == 'Основная' && Row > 1 && Column == 1 && LastRowInMain > LastRowInNamedMain) {
     Logger.log("If for NewRowInMain() = True")
     NewRowInMain()
+  }
+  
+  // Если условия не выполнены - вывод ошибки
+  else {
+    Logger.log("Условия всех функций не выполнены")
   }
   
   // Конец функции onEdit()
   Logger.log("END onEdit()")
 }
+
+/*
+*/
 
 function NewData() {
 // Функция реагирует на события указания новых значений на вкладке 'Основная' для отсутствующих в справочнике ингридентов
@@ -110,6 +140,9 @@ function NewData() {
   Logger.log("END NewData()")
 }
 
+/*
+*/
+
 function ChangeData(event) {
 // Функция реагирует на события изменения данных в определенных колонках на вкладке 'Основная'
   
@@ -152,6 +185,9 @@ function ChangeData(event) {
   // Конец функции ChangeData()
   Logger.log("END ChangeData()")
 }
+
+/*
+*/
 
 function NewRowInMain(event) {
 // Функция реагирует на события добавления новых строк на вкладке 'Основная'
