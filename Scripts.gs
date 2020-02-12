@@ -180,6 +180,10 @@ function ChangeData(event) {
   Cell.copyTo(Prices.getRange('Цены').getCell(RowInLib, Column), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
   Logger.log("Data (Cell=" + Value + ") copy in a availible cell {(RowInLib, Column)=(" + RowInLib + "," + (Column) + ")}")
   
+  // Восстанавливаем исходную формулу в ячейке
+  Cell.setFormula('=IF(ISERROR(VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE))')
+  Logger.log('Формула в ячейке (' + Row + ',' + Column + ') восстановлена: ' + '=IF(ISERROR(VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE))')
+
   // Конец функции ChangeData()
   Logger.log("END ChangeData()")
 }
@@ -206,24 +210,29 @@ function NewRowInMain(event) {
   SpreadsheetApp.getActive().setNamedRange('RowInLib', Main.getRange('I2:I' + indexLastRowInMain))
   Logger.log('В именованные диапазоны добавлены новые строки (NamedRange=' + indexLastRowInMain + ')')
   
-  // Копируем диапазон последней строки на вкладке 'Основная'
-  var LastRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 2, 1, 9)
+  // Копируем данные из старой строки в новую 
+
+  var LastRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 1, 1, 9) // Диапазон старой строки  
   Logger.log('LastRowInMain=' + LastRowInMain)
-  
-  // Копируем формулы из старой строки
-  var formulaLastRowInMain = LastRowInMain.getFormulas()
-  Logger.log('formulaLastRowInMain=' + formulaLastRowInMain)
-  
-  // Копируем диапазон новой строки на вкладке 'Основная'
-  var NewRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain, 2, 1, 9)
+  var NewRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain, 1, 1, 9) // Диапазон новой строки
   Logger.log('NewRowInMain=' + NewRowInMain)
+  LastRowInMain.copyTo(NewRowInMain, SpreadsheetApp.CopyPasteType.PASTE_FORMAT, false) // Копируем формат
+  Logger.log('В новой строке установлен как в предыдущей строке ФОРМАТ')
+  LastRowInMain.copyTo(NewRowInMain, SpreadsheetApp.CopyPasteType.PASTE_DATA_VALIDATION, false) // Копируем проверку данных
+  Logger.log('В новой строке установлен как в предыдущей строке ПРОВЕРКА ДАННЫХ')
   
-  // Вставляем значение формул из старой в новую строку
-  NewRowInMain.setFormulas(formulaLastRowInMain)
-  
-  //Cell.setFormula('=IF(ISERROR(VLOOKUP($A' + LastRowInMain + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + LastRowInMain + ';Цены;' + Column + ';FALSE))')
-  //Logger.log('Формула в ячейке (' + LastRowInMain + ',' + Column + ') восстановлена: ' + '=IF(ISERROR(VLOOKUP($A' + LastRowInMain + ';Цены;' + Column + ';FALSE));"";VLOOKUP($A' + Row + ';Цены;' + Column + ';FALSE))')
-  
+  // Копируем доплнительные диапазоны из старой и новой строки, т.к. формула копирования формул так же переносит значения из некоторых ячеек
+  var LastRowInMain2 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 2, 1, 2) // Диапазоны из старой строки
+  var LastRowInMain3 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 5, 1, 2) // Диапазоны из старой строки
+  var LastRowInMain4 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 9, 1, 1) // Диапазоны из старой строки
+  var NewRowInMain2 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain, 2, 1, 2) // Диапазоны из новой строки
+  var NewRowInMain3 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain, 5, 1, 2) // Диапазоны из новой строки
+  var NewRowInMain4 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain, 9, 1, 1) // Диапазоны из новой строки
+  LastRowInMain2.copyTo(NewRowInMain2, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false) // Копируем формулы из доп диапазона 2
+  LastRowInMain3.copyTo(NewRowInMain3, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false) // Копируем формулы из доп диапазона 3
+  LastRowInMain4.copyTo(NewRowInMain4, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false) // Копируем формулы из доп диапазона 4
+  Logger.log('В новой строке установлен как в предыдущей строке ФОРМУЛЫ')
+
   // Конец функции NewRowInMain()
   Logger.log("END NewRowInMain()")
 }
