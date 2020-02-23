@@ -218,8 +218,6 @@ function NewRowInMain(event) {
   Logger.log('NewRowInMain=' + NewRowInMain)
   LastRowInMain.copyTo(NewRowInMain, SpreadsheetApp.CopyPasteType.PASTE_FORMAT, false) // Копируем формат
   Logger.log('В новой строке установлен как в предыдущей строке ФОРМАТ')
-  LastRowInMain.copyTo(NewRowInMain, SpreadsheetApp.CopyPasteType.PASTE_DATA_VALIDATION, false) // Копируем проверку данных
-  Logger.log('В новой строке установлен как в предыдущей строке ПРОВЕРКА ДАННЫХ')
   
   // Копируем доплнительные диапазоны из старой и новой строки, т.к. формула копирования формул так же переносит значения из некоторых ячеек
   var LastRowInMain2 = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain-1, 2, 1, 2) // Диапазоны из старой строки
@@ -232,6 +230,15 @@ function NewRowInMain(event) {
   LastRowInMain3.copyTo(NewRowInMain3, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false) // Копируем формулы из доп диапазона 3
   LastRowInMain4.copyTo(NewRowInMain4, SpreadsheetApp.CopyPasteType.PASTE_FORMULA, false) // Копируем формулы из доп диапазона 4
   Logger.log('В новой строке установлен как в предыдущей строке ФОРМУЛЫ')
+  
+  // Переносим проверку данных на следующую строку, т.к. проверка нужна уже в начале ввода данных
+  var NextRowInMain = SpreadsheetApp.getActive().getSheetByName('Основная').getRange(indexLastRowInMain+1, 1, 1, 9) // Диапазон старой строки  
+  Logger.log('NextRowInMain=' + NextRowInMain)
+  NewRowInMain.copyTo(NextRowInMain, SpreadsheetApp.CopyPasteType.PASTE_DATA_VALIDATION, false) // Копируем проверку данных
+  Logger.log('В новой строке установлен как в предыдущей строке ПРОВЕРКА ДАННЫХ')
+  
+  // Делаем активной вторую ячейку в таблице
+  //SpreadsheetApp.getActive().getCurrentCell().offset(0, 3).activate()
 
   // Конец функции NewRowInMain()
   Logger.log("END NewRowInMain()")
